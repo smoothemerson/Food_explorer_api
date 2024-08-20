@@ -1,6 +1,6 @@
 const knex = require("../database/knex")
 
-class DishController {
+class DishesController {
   async create(request, response) {
     const { title, description, tags, price } = request.body
     const user_id = request.user.id
@@ -46,4 +46,4 @@ class DishController {
   }
 }
 
-module.exports = DishController
+module.exports = DishesController
