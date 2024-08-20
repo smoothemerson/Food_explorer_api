@@ -1,7 +1,6 @@
 const UserCreateService = require("./UserCreateService");
 const UserRepositoryInMemory = require("../repositories/UserRepositoryInMemory");
 const AppError = require("../utils/AppError");
-const { describe } = require("pm2");
 
 describe("UserCreateService", () => {
   let userRepositoryInMemory = null;
@@ -9,7 +8,7 @@ describe("UserCreateService", () => {
 
   beforeEach(() => {
     userRepositoryInMemory = new UserRepositoryInMemory();
-    userCreateService = new UserCreateService();
+    userCreateService = new UserCreateService(userRepositoryInMemory);
   });
 
   it("user should be create", async () => {
