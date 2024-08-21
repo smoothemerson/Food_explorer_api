@@ -47,22 +47,43 @@ class DishesController {
 
   async index(request, response) {
     const { title, tags } = request.query
-  
-    let dishesQuery = knex("dishes")
-  
-    if (title) {
-      dishesQuery = dishesQuery.where("title", "like", `%${title}%`)
-    }
-  
+    const user_id = request.user.id
+
+    let dishes
+
     if (tags) {
-      const filteredDishes = await knex("tags")
-        .select("dish_id")
-        .whereIn("name", tags.split(","))
-      dishesQuery = dishesQuery.whereIn("id", filteredDishes.map(tag => tag.dish_id))
+      const filterTags = tags.split(',').map(tag => tag.trim())
+
+      dishes = await knex("tags")
+        .select([
+          "dishes.id",
+          "dishes.title",
+          "dishes.user_id"
+        ])
+        .where("dishes.user_id", user_id)
+        .whereLike("dishes.title", `%${title}%`)
+        .whereIn("name", filterTags)
+        .innerJoin("dishes", "dishes.id", "tags.note_id")
+        .groupBy("dishes.id")
+        .orderBy("dishes.title")
+    } else {
+      dishes = await knex("dishes")
+        .where({ user_id })
+        .whereLike("title", `%${title}%`)
+        .orderBy("title")
     }
-  
-    const dishes = await dishesQuery
-    return response.json(dishes)
+
+    const userTags = await knex("tags").where({ user_id })
+    const dishesWithTags = dishes.map(dish => {
+      const dishTags = userTags.filter(tag => tag.dish_id === dish.id)
+
+      return {
+        ...dish,
+        tags: dishTags
+      }
+    })
+
+    return response.json(dishesWithTags)
   }
 }
 
