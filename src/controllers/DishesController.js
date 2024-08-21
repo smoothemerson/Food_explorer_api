@@ -31,7 +31,7 @@ class DishesController {
     const dish = await knex("dishes").where({ id }).first()
     const tags = await knex("tags").where({ dish_id: id }).orderBy("name")
 
-    return response.json ({
+    return response.json({
       ...dish,
       tags,
     })
