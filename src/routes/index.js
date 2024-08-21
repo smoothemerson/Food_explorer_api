@@ -8,7 +8,7 @@ const sessionRoutes = require("./sessions.routes")
 const routes = Router()
 routes.use("/users", usersRoutes)
 routes.use("/sessions", sessionRoutes)
-routes.use("/notes", dishesRoutes)
+routes.use("/dishes", dishesRoutes)
 routes.use("/tags", tagsRoutes)
 
 module.exports = routes
