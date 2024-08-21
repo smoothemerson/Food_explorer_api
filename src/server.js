@@ -3,12 +3,14 @@ require("dotenv/config")
 
 const AppError = require("./utils/AppError")
 const uploadConfig = require("./configs/upload")
+const cookieParser = require("cookie-parser")
 
 const cors = require("cors")
 const express = require("express");
 const routes = require("./routes")
 
 const app = express();
+app.use(cookieParser())
 app.use(cors())
 app.use(express.json())
 
