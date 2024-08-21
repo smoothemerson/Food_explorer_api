@@ -44,6 +44,26 @@ class DishesController {
 
     return response.json()
   }
+
+  async index(request, response) {
+    const { title, tags } = request.query
+  
+    let dishesQuery = knex("dishes")
+  
+    if (title) {
+      dishesQuery = dishesQuery.where("title", "like", `%${title}%`)
+    }
+  
+    if (tags) {
+      const filteredDishes = await knex("tags")
+        .select("dish_id")
+        .whereIn("name", tags.split(","))
+      dishesQuery = dishesQuery.whereIn("id", filteredDishes.map(tag => tag.dish_id))
+    }
+  
+    const dishes = await dishesQuery
+    return response.json(dishes)
+  }
 }
 
 module.exports = DishesController
