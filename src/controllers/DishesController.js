@@ -8,7 +8,7 @@ class DishesController {
     const [dish_id] = await knex("dishes").insert({
       title,
       description,
-      tags,
+      user_id,
       price,
     })
 
@@ -16,7 +16,7 @@ class DishesController {
       return {
         dish_id,
         name,
-        user_id,
+        user_id
       }
     })
 
