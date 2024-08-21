@@ -7,6 +7,10 @@ class UserCreateService {
   }
 
   async execute({ name, email, password }) {
+    if(!name || !email || !password){
+      throw new AppError("Preencha os campos necessários.")
+    }
+
     const checkUserExist = await this.userRepository.findByEmail(email);
 
     if (checkUserExist) {
