@@ -7,6 +7,10 @@ class DishesImageController {
     const dish_id = request.dish.id
     const imageFilename = request.file.filename
 
+    if(!imageFilename) {
+      throw new AppError("Faça o upload de uma imagem.")
+    }
+
     const diskStorage = new DiskStorage()
 
     const dish = await knex("dishes")
