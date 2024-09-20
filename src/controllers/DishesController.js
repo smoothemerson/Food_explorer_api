@@ -6,7 +6,7 @@ class DishesController {
     const { title, description, category, tags, price } = request.body
     const user_id = request.user.id
 
-    if(!title || !description || !category || !tags || !price ) {
+    if (!title || !description || !category || !tags || !price) {
       throw new AppError("Preencha os campos necessários.")
     }
 
@@ -57,26 +57,22 @@ class DishesController {
 
     let dishes
 
+    const query = knex("dishes").select("dishes.*").where({ user_id });
+
+    if (title) {
+      query.whereLike("dishes.title", `%${title}%`);
+    }
+
     if (tags) {
       const filterTags = tags.split(',').map(tag => tag.trim())
 
-      dishes = await knex("tags")
-        .select([
-          "dishes.id",
-          "dishes.title",
-          "dishes.user_id"
-        ])
-        .where("dishes.user_id", user_id)
-        .whereLike("dishes.title", `%${title}%`)
-        .whereIn("name", filterTags)
-        .innerJoin("dishes", "dishes.id", "tags.note_id")
+      dishes = await query
+        .innerJoin("tags", "dishes.id", "tags.dish_id")
+        .whereIn("tags.name", filterTags)
         .groupBy("dishes.id")
-        .orderBy("dishes.title")
+        .orderBy("dishes.title");
     } else {
-      dishes = await knex("dishes")
-        .where({ user_id })
-        .whereLike("title", `%${title}%`)
-        .orderBy("title")
+      dishes = await query.orderBy("dishes.title");
     }
 
     const userTags = await knex("tags").where({ user_id })
