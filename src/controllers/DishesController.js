@@ -3,16 +3,17 @@ const AppError = require("../utils/AppError")
 
 class DishesController {
   async create(request, response) {
-    const { title, description, tags, price } = request.body
+    const { title, description, category, tags, price } = request.body
     const user_id = request.user.id
 
-    if(!title || !description || !tags || !price ) {
+    if(!title || !description || !category || !tags || !price ) {
       throw new AppError("Preencha os campos necessários.")
     }
 
     const [dish_id] = await knex("dishes").insert({
       title,
       description,
+      category,
       user_id,
       price,
     })
