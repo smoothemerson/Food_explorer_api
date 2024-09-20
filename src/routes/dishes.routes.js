@@ -15,10 +15,10 @@ const dishesImageController = new DishesImageController()
 
 dishesRoutes.use(ensureAuthenticated)
 
+dishesRoutes.get("/:id", dishesController.show)
+dishesRoutes.get("/", dishesController.index)
 dishesRoutes.post("/", verifyUserAuthorization(["admin"]), dishesController.create)
 dishesRoutes.patch("/avatar", verifyUserAuthorization(["admin"]), upload.single("avatar"), dishesImageController.update)
 dishesRoutes.delete("/:id", verifyUserAuthorization(["admin"]), dishesController.delete)
-dishesRoutes.get("/:id", dishesController.show)
-dishesRoutes.get("/", dishesController.index)
 
 module.exports = dishesRoutes
