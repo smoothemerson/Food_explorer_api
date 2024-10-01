@@ -53,11 +53,10 @@ class DishesController {
 
   async index(request, response) {
     const { title, tags } = request.query
-    const user_id = request.user.id
 
     let dishes
 
-    const query = knex("dishes").select("dishes.*").where({ user_id });
+    const query = knex("dishes").select("dishes.*");
 
     if (title) {
       query.whereLike("dishes.title", `%${title}%`);
@@ -75,7 +74,7 @@ class DishesController {
       dishes = await query.orderBy("dishes.title");
     }
 
-    const userTags = await knex("tags").where({ user_id })
+    const userTags = await knex("tags")
     const dishesWithTags = dishes.map(dish => {
       const dishTags = userTags.filter(tag => tag.dish_id === dish.id)
 
